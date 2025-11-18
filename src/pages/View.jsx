@@ -13,7 +13,7 @@ function View() {
           <img className='img-fluid' src="https://www.kiehls.in/media/catalog/product/cache/562c93b51a3633e02dec1d197ab7954c/w/w/ww0043kie_view.1_1_1_1.jpg" alt="product" />
           <div className="d-flex justify-content-evenly mt-5">
             <button className="btn btn-primary">ADD TO WISHLIST</button>
-            <button className="btn btn-primary">ADD TO CART</button>
+            <button className="btn btn-success">ADD TO CART</button>
           </div>
         </div>
         <div className="col-md-6">
