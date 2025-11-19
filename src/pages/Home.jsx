@@ -10,7 +10,7 @@ import { getAllProducts } from '../redux/slices/productSlice'
 function Home() {
   const dispatch = useDispatch()
   const { loading, allProducts, error } = useSelector(state => state.productReducer)
-  console.log(allProducts);
+  // console.log(allProducts);
 
 
   useEffect(() => {
@@ -36,7 +36,7 @@ function Home() {
                         <Card.Img height={'250px'} variant="top" src={product?.thumbnail} />
                         <Card.Body className='text-center'>
                           <Card.Title>Title</Card.Title>
-                          <Link to={`/product/${product?.id} /view`} className='btn btn-secondary'>View More..</Link>
+                          <Link to={`/product/${product?.id}/view`} className='btn btn-secondary'>View More..</Link>
                         </Card.Body>
                       </Card>
                     </div>

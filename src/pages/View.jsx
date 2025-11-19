@@ -1,37 +1,77 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
+import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToWishlist } from '../redux/slices/wishlistSlice'
 
 function View() {
+
+  const userWishlit = useSelector(state=>state.wishlistReducer)
+  const dispatch = useDispatch()
+  // get product id from url
+  const { id } = useParams()
+  console.log(id);
+  // state for storing product to be view
+  const [product, setProduct] = useState({})
+  console.log(product);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("products")) {
+      const allProducts = JSON.parse(sessionStorage.getItem("products"))
+      setProduct(allProducts.find(item=>item.id==id))
+    }
+  }, [])
+
+  const handleWishlist = ()=>{
+    const existingProduct = userWishlit?.find(item=>item.id==id)
+    if(existingProduct){
+      alert("product already in wishlist...")
+    }else{
+      // add product to wishlist in redux store - dispatch action
+      dispatch(addToWishlist(product))
+    }
+
+  }
+
+
+
   return (
     <>
-    <Header/>
-    <div className="container py-5">
-      <div className="row my-5">
-        <div className="col-md-6 text-center">
-          <img className='img-fluid' src="https://www.kiehls.in/media/catalog/product/cache/562c93b51a3633e02dec1d197ab7954c/w/w/ww0043kie_view.1_1_1_1.jpg" alt="product" />
-          <div className="d-flex justify-content-evenly mt-5">
-            <button className="btn btn-primary">ADD TO WISHLIST</button>
-            <button className="btn btn-success">ADD TO CART</button>
+      <Header />
+      <div className="container py-5">
+        <div className="row my-5">
+          <div className="col-md-6 text-center">
+            <img className='img-fluid' src={product?.thumbnail} alt="product" />
+            <div className="d-flex justify-content-evenly mt-5">
+              <button onClick={handleWishlist} className="btn btn-primary">ADD TO WISHLIST</button>
+              <button className="btn btn-success">ADD TO CART</button>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6">
-          <h1>title</h1>
-          <h3 className='text-danger'>$price</h3>
-          <h4>Brand : </h4>
-          <h4>Category : </h4>
-          <h4>Description : </h4>
+          <div className="col-md-6">
+            <h1>{product?.title}</h1>
+            <h3 className='text-danger'>$ {product?.price}</h3>
+            <h4>Brand : {product?.brand}</h4>
+            <h4>Category : {product?.category}</h4>
+            <h4>Description : {product?.description}</h4>
 
-          <h3 className="my-3">Client Reviews</h3>
-          {/* duplicate div */}
-          <div className="border rounded p-3 shadow">
-            <p><span className="fw-bolder">username : </span> message: </p>
-            <p>Rating : number<FontAwesomeIcon icon={faStar} className='text-warning'/></p>
+            <h3 className="my-3">Client Reviews</h3>
+            {/* duplicate div */}
+            {
+              product?.reviews?.length > 0 ?
+                product?.reviews?.map((item, index) => (
+                  <div className="border rounded p-3 shadow">
+                    <p><span className="fw-bolder">{item?.reviewerName} : </span> {item?.comment} </p>
+                    <p>Rating : {item?.rating}<FontAwesomeIcon icon={faStar} className='text-warning' /></p>
+                  </div>
+                ))
+                :
+                <div>No Client reviews are available</div>
+            }
           </div>
         </div>
       </div>
-    </div>
     </>
   )
 }
