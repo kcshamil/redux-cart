@@ -5,10 +5,14 @@ import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToWishlist } from '../redux/slices/wishlistSlice'
+import Swal from 'sweetalert2'
+import { addToCart } from '../redux/slices/cartSlice'
 
 function View() {
 
-  const userWishlit = useSelector(state=>state.wishlistReducer)
+  const userWishlit = useSelector(state => state.wishlistReducer)
+  const userCart = useSelector(state=>state.cartReducer)
+  
   const dispatch = useDispatch()
   // get product id from url
   const { id } = useParams()
@@ -20,19 +24,36 @@ function View() {
   useEffect(() => {
     if (sessionStorage.getItem("products")) {
       const allProducts = JSON.parse(sessionStorage.getItem("products"))
-      setProduct(allProducts.find(item=>item.id==id))
+      setProduct(allProducts.find(item => item.id == id))
     }
   }, [])
 
-  const handleWishlist = ()=>{
-    const existingProduct = userWishlit?.find(item=>item.id==id)
-    if(existingProduct){
-      alert("product already in wishlist...")
-    }else{
+  const handleWishlist = () => {
+    const existingProduct = userWishlit?.find(item => item.id == id)
+    if (existingProduct) {
+      // alert("product already in wishlist...")
+      Swal.fire({
+        title: 'Sorry!',
+        text: 'product already in wishlist...',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+    } else {
       // add product to wishlist in redux store - dispatch action
       dispatch(addToWishlist(product))
     }
 
+  }
+
+  const handleCart = ()=>{
+    const existingProduct = userCart?.find(item=>item.id==id)
+    dispatch(addToCart(product))
+    Swal.fire({
+      title:'Completec!',
+      text:existingProduct?`Quantity of ${product.title},is updated successfully`:`Product added to your cart...`,
+      icon:'success',
+      confirmButtonText:'Ok'
+    })
   }
 
 
@@ -46,7 +67,7 @@ function View() {
             <img className='img-fluid' src={product?.thumbnail} alt="product" />
             <div className="d-flex justify-content-evenly mt-5">
               <button onClick={handleWishlist} className="btn btn-primary">ADD TO WISHLIST</button>
-              <button className="btn btn-success">ADD TO CART</button>
+              <button onClick={handleCart} className="btn btn-success">ADD TO CART</button>
             </div>
           </div>
           <div className="col-md-6">
