@@ -8,7 +8,7 @@ const cartStore =  configureStore({
     reducer:{
         productReducer : productSlice,
         wishlistReducer : wishlistSlice,
-        createReducer:cartSlice 
+        cartReducer:cartSlice 
 
     }
 })
